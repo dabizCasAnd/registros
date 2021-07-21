@@ -9,7 +9,7 @@ var size = 25;
 var gW = cols * size;
 var gH = rows * size;
 
-var headerSize = 4 * size;
+var headerSize = 2 * size;
 
 var gX = 0,
     gY = 0,
@@ -62,7 +62,7 @@ function drawGrid() {
         ctx.save();
         ctx.translate(i * size + 16, headerSize - 8);
         ctx.rotate(Math.PI * 1.5);
-        ctx.fillText("Column " + i, 0, 0);
+        ctx.fillText(i, 0, 0);
         ctx.restore();
 
         for (var j = 0; j < rows; ++j) {
@@ -84,7 +84,13 @@ function handle(delta) {
 }
 
 function wheel(event) {
-    event.preventDefault()
+    if (event.cancelable) {
+        // Determine whether the default behavior has been disabled
+       if (!event.defaultPrevented) {
+           event.preventDefault();
+       }
+    }
+
     var delta = 0;
     if (!event) event = window.event;
     if (event.wheelDelta) {
@@ -105,6 +111,8 @@ function wheel(event) {
 export function initCollectionRegistry(cv) {
     canvas = cv;//document.getElementById('canvas');
     ctx = canvas.getContext("2d");
+    ctx.canvas.width = window.innerWidth;
+    ctx.canvas.height = 3*window.innerWidth/4;
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = 1;
     ctx.font = "14px sans-serif";
@@ -119,7 +127,7 @@ export function initCollectionRegistry(cv) {
     drawGrid(0, 0);
 
     if (window.addEventListener) {
-        document.addEventListener('mousewheel DOMMouseScroll MozMousePixelScroll', e => { e.preventDefault(); wheel(e) }, { passive: false });
+        document.addEventListener('mousewheel DOMMouseScroll MozMousePixelScroll', wheel, { passive: false });
         //window.addEventListener('DOMMouseScroll', wheel, { capture: false, passive: false } );
     }
     //document.addEventListener('touchstart', function(){}, {passive: false})

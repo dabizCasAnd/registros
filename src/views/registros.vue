@@ -1,7 +1,9 @@
 <template>
     <div>
         <div>registro</div>
-        <canvas id="registryCanvas"></canvas>
+        <div class="registry-collection-visor">
+            <canvas id="registryCanvas"></canvas>
+        </div>
     </div>
 </template>
 
@@ -20,3 +22,10 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+    .registry-collection-visor {
+        overflow: hidden;
+        width: 100%;
+    }
+</style>
