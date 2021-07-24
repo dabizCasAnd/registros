@@ -83,7 +83,7 @@ function handle(delta) {
     drawGrid();
 }
 
-function wheel(event) {
+function handleScroll(event) {
     if (event.cancelable) {
         // Determine whether the default behavior has been disabled
        if (!event.defaultPrevented) {
@@ -126,12 +126,34 @@ export function initCollectionRegistry(cv) {
 
     drawGrid(0, 0);
 
-    if (window.addEventListener) {
-        document.addEventListener('mousewheel DOMMouseScroll MozMousePixelScroll', wheel, { passive: false });
-        //window.addEventListener('DOMMouseScroll', wheel, { capture: false, passive: false } );
-    }
-    //document.addEventListener('touchstart', function(){}, {passive: false})
-    window.onmousewheel = document.onmousewheel = wheel;
+    canvas.addEventListener('DOMMouseScroll', handleScroll, false);
+    canvas.addEventListener('mousewheel', handleScroll, false);
+
+    canvas.addEventListener('mousedown', (e) => {
+        isDown = true;
+        pX = e.pageX;
+        pY = e.pageY;
+    });
+    canvas.addEventListener('mouseup', (e) => {
+        isDown = false;
+    });
+    canvas.addEventListener('mouseout', (e) => {
+        isDown = false;
+    });
+    canvas.addEventListener('mousemove', (e) =>{
+        if (isDown) {
+            gX += (pX - e.pageX) * speed;
+            gY += (pY - e.pageY) * speed;
+            pX = e.pageX;
+            pY = e.pageY;
+            if (gX > 0) gX = 0;
+            if (gX < canvas.width - gW * gScale) gX = canvas.width - gW * gScale;
+            if (gY > 0) gY = 0;
+            if (gY < canvas.height - gH * gScale) gY = canvas.height - gH * gScale;
+    
+            drawGrid();
+        }
+    });
 }
 
 

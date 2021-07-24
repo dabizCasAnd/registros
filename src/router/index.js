@@ -17,6 +17,11 @@ export default new Router({
             path: "/registros",
             name: "Registro",
             component: () => import(/* webpackChunkName: "about" */ "../views/registros.vue")
+        },
+        {
+            path: "/mapa",
+            name: "Mapa",
+            component: () => import(/* webpackChunkName: "about" */ "../views/mapa.vue")
         }
     ]
 });
