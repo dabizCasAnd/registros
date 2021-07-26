@@ -1,26 +1,82 @@
 export default [
     {
+        id: 0,
         titulo: 'Lorem ipsum',
         numero: 'rg: 121',
-        miniatura: '<svg height="100%" viewBox="0 0 512 512" width="100%" xmlns="http://www.w3.org/2000/svg"><g><path d="m476 56h-440a28.031 28.031 0 0 0 -28 28v344a28.031 28.031 0 0 0 28 28h440a28.031 28.031 0 0 0 28-28v-344a28.031 28.031 0 0 0 -28-28zm12 372a12.01 12.01 0 0 1 -12 12h-440a12.01 12.01 0 0 1 -12-12v-308h464zm0-324h-464v-20a12.01 12.01 0 0 1 12-12h440a12.01 12.01 0 0 1 12 12z"/><path d="m40 96h8a8 8 0 0 0 0-16h-8a8 8 0 0 0 0 16z"/><path d="m72 96h8a8 8 0 0 0 0-16h-8a8 8 0 0 0 0 16z"/><path d="m104 96h8a8 8 0 0 0 0-16h-8a8 8 0 0 0 0 16z"/><path d="m336 176h-160a48.054 48.054 0 0 0 -48 48v112a48.054 48.054 0 0 0 48 48h160a48.054 48.054 0 0 0 48-48v-112a48.054 48.054 0 0 0 -48-48zm32 160a32.036 32.036 0 0 1 -32 32h-160a32.036 32.036 0 0 1 -32-32v-112a32.036 32.036 0 0 1 32-32h160a32.036 32.036 0 0 1 32 32z"/><path d="m315.578 272.845-112-56a8 8 0 0 0 -11.578 7.155v112a8 8 0 0 0 11.578 7.155l112-56a8 8 0 0 0 0-14.31zm-107.578 50.211v-86.112l86.111 43.056z"/></g></svg>',
         nombre: 'serigrafia de un notas',
-        tipo: 'text/video/img',
-        category: 'dasdasd',
+        miniatura: 'video.svg',
+        src: 'aqui va a ir el nombre de la imagen o el video que se ve al sacar la ficha: eje: video1.mp4',
+        tipo: 'text/video/img/audio',
+        categoria_retablo: 'dasdasd',
+        conceptos_asociados: [
+            {
+                nombre: 'poder',
+                intensidad: 1
+            },
+            {
+                nombre: 'verdad',
+                intensidad: 2
+            }
+        ],
+        categoria_contenido: [
+            {
+                nombre: 'contenido',
+                tipo: 'ficciones'
+            },
+            {
+                nombre: 'vida_cotidiana',
+                tipo: 'temporalidades'
+            },
+            {
+                nombre: 'posicionamiento',
+                tipo: 'margen'
+            }
+        ],
         autor: 'a',
         descripcion: 'lorem ipsum',
         datacion: '14/7/2021',
-        fecha: '19/7/2021'
+        fecha: '19/7/2021',
+        notas: 'lorem ipsum sit',
+        fuente: ''
     },
     {
+        id: 1,
         titulo: 'Lorem ipsum',
-        numero: 'lorem',
-        miniatura: '<svg height="100%" viewBox="0 0 512 512" width="100%" xmlns="http://www.w3.org/2000/svg"><g><path d="m476 56h-440a28.031 28.031 0 0 0 -28 28v344a28.031 28.031 0 0 0 28 28h440a28.031 28.031 0 0 0 28-28v-344a28.031 28.031 0 0 0 -28-28zm12 372a12.01 12.01 0 0 1 -12 12h-440a12.01 12.01 0 0 1 -12-12v-308h464zm0-324h-464v-20a12.01 12.01 0 0 1 12-12h440a12.01 12.01 0 0 1 12 12z"/><path d="m40 96h8a8 8 0 0 0 0-16h-8a8 8 0 0 0 0 16z"/><path d="m72 96h8a8 8 0 0 0 0-16h-8a8 8 0 0 0 0 16z"/><path d="m104 96h8a8 8 0 0 0 0-16h-8a8 8 0 0 0 0 16z"/><path d="m336 176h-160a48.054 48.054 0 0 0 -48 48v112a48.054 48.054 0 0 0 48 48h160a48.054 48.054 0 0 0 48-48v-112a48.054 48.054 0 0 0 -48-48zm32 160a32.036 32.036 0 0 1 -32 32h-160a32.036 32.036 0 0 1 -32-32v-112a32.036 32.036 0 0 1 32-32h160a32.036 32.036 0 0 1 32 32z"/><path d="m315.578 272.845-112-56a8 8 0 0 0 -11.578 7.155v112a8 8 0 0 0 11.578 7.155l112-56a8 8 0 0 0 0-14.31zm-107.578 50.211v-86.112l86.111 43.056z"/></g></svg>',
+        numero: 'rg: 121',
         nombre: 'serigrafia de un notas',
-        tipo: 'text/video/img',
-        category: 'dasdasd',
+        miniatura: 'video.svg',
+        src: 'aqui va a ir el nombre de la imagen o el video que se ve al sacar la ficha: eje: video1.mp4',
+        tipo: 'text/video/img/audio',
+        categoria_retablo: 'dasdasd',
+        conceptos_asociados: [
+            {
+                nombre: 'poder',
+                intensidad: 1
+            },
+            {
+                nombre: 'verdad',
+                intensidad: 2
+            }
+        ],
+        categoria_contenido: [
+            {
+                nombre: 'contenido',
+                tipo: 'ficciones'
+            },
+            {
+                nombre: 'vida_cotidiana',
+                tipo: 'temporalidades'
+            },
+            {
+                nombre: 'posicionamiento',
+                tipo: 'margen'
+            }
+        ],
         autor: 'a',
         descripcion: 'lorem ipsum',
         datacion: '14/7/2021',
-        fecha: '19/7/2021'
+        fecha: '19/7/2021',
+        notas: 'lorem ipsum sit',
+        fuente: ''
     }
 ]
