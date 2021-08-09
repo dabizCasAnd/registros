@@ -1,5 +1,6 @@
 <template>
 <div>
+  <button @click="shuffleCollection()">shuffle</button>
     <fileViewer :registryObject='currentRegistry'></fileViewer>
     <div id="app-registry-collection" :style="{ minWidth: size + 'px', minHeight: size + 'px' }">
         <div
@@ -9,26 +10,36 @@
         >
         <!-- @click.stop -->
         <div
-            v-for="component in components"
+            v-for="component in componentsCollection"
             :key="component.id"
             class="canvas-element"
             @click="showComponentInfo"
-            :id="'component' + component.id"
+            v-b-toggle.sidebar-1
+            :id="'component_' + component.id"
             :style="{
             height: component.height + 'px',
             width: component.width + 'px',
             zIndex: component.zIndex,
             left: component.x + 'px',
             top: component.y + 'px'
-            }"
-        >
+            }">
             <div style="color: black;">
-              <img class="registry-icon" :src="require('@/assets/video.svg')" alt="" title="">
-                <!-- <svg height="100%" viewBox="0 0 512 512" width="100%" xmlns="http://www.w3.org/2000/svg"><g><path d="m476 56h-440a28.031 28.031 0 0 0 -28 28v344a28.031 28.031 0 0 0 28 28h440a28.031 28.031 0 0 0 28-28v-344a28.031 28.031 0 0 0 -28-28zm12 372a12.01 12.01 0 0 1 -12 12h-440a12.01 12.01 0 0 1 -12-12v-308h464zm0-324h-464v-20a12.01 12.01 0 0 1 12-12h440a12.01 12.01 0 0 1 12 12z"/><path d="m40 96h8a8 8 0 0 0 0-16h-8a8 8 0 0 0 0 16z"/><path d="m72 96h8a8 8 0 0 0 0-16h-8a8 8 0 0 0 0 16z"/><path d="m104 96h8a8 8 0 0 0 0-16h-8a8 8 0 0 0 0 16z"/><path d="m336 176h-160a48.054 48.054 0 0 0 -48 48v112a48.054 48.054 0 0 0 48 48h160a48.054 48.054 0 0 0 48-48v-112a48.054 48.054 0 0 0 -48-48zm32 160a32.036 32.036 0 0 1 -32 32h-160a32.036 32.036 0 0 1 -32-32v-112a32.036 32.036 0 0 1 32-32h160a32.036 32.036 0 0 1 32 32z"/><path d="m315.578 272.845-112-56a8 8 0 0 0 -11.578 7.155v112a8 8 0 0 0 11.578 7.155l112-56a8 8 0 0 0 0-14.31zm-107.578 50.211v-86.112l86.111 43.056z"/></g></svg> -->
+              <template v-if="currentCategory !== null && +component.category1 == currentCategory">
+                <div class="icon-category"></div>
+                <img class="registry-icon category-visible" :src="require('@/assets/img/' + component.miniatura)" alt="" title="">
+              </template>
+              <template v-else>
+                <img class="registry-icon" :src="require('@/assets/img/' + component.miniatura)" alt="" title="">
+              </template>
             </div>
         </div>
         </div>
     </div>
+    <svg>
+      <filter id="blue-wash">
+        <feColorMatrix type="matrix" values="0.2 0.2 0.2 0 0   0.3 0.3 0.3 0 0  1 1 1 0 0  0 0 0 1 0"/>
+      </filter>
+    </svg>
 </div>
 </template>
 
@@ -38,7 +49,7 @@ import { Draggable } from "gsap/Draggable";
 import fileViewer from './file-viewer.vue';
 
 const bgSize = 2500;
-const subdivisions = 50;
+const subdivisions = 60;
 const minZoom = 90;
 const maxZoom = 35;
 
@@ -48,6 +59,10 @@ export default {
       collectionJson: {
         type: Array,
         required: true
+      },
+      currentCategory: {
+        type: Number,
+        required: false
       }
   },
   components: {
@@ -55,16 +70,16 @@ export default {
   },
   data: () => {
     return {
+      screenWith: 1116,
       size: 0,
       subdivisions: 0,
       currentTarget: null,
       draggablesArray: [],
-      components: [],
+      componentsCollection: [],
       currentRegistry: {}
     };
   },
   mounted() {
-      console.log(this.collectionJson)
     window.onresize = this.handleResizeEvent;
     this.size = bgSize;
     this.subdivisions = subdivisions;
@@ -81,26 +96,8 @@ export default {
       bounds: { minX: -2000, minY: -2000, maxX: 0, maxY: 0 }
     });
 
-    let posX = 1280 / 10, posY = 0;
-    for(let i = 1; i <= 45; i ++) {
-        this.components.push({
-            id: this.components.length,
-            width: this.gridBlockRatio * 2,
-            height: this.gridBlockRatio * 2,
-            zIndex: (this.components.length + 1) * 10,
-            img: this.collectionJson[0].miniatura,
-            x: posX,
-            y: posY
-        });
-
-        posX += this.gridBlockRatio * 2 + this.divSize; //posX + this.gridBlockRatio * 2 + this.divSize / 4;
-        if(i % 10 == 0 && i > 0) {
-            posY += this.gridBlockRatio * 2 + this.divSize;
-            posX = 1280 / 10;
-        }
-    }
-
-    el.style.backgroundSize = this.gridBlockRatio + "px" + " " + this.gridBlockRatio + "px";
+    this.positionComponets(this.collectionJson);
+    //el.style.backgroundSize = (this.gridBlockRatio * 2 + + this.divSize) + "px" + " " + (this.gridBlockRatio * 2 + + this.divSize) + "px";
   },
   computed: {
     divSize() {
@@ -111,6 +108,29 @@ export default {
     }
   },
   methods: {
+    positionComponets(collection) {
+      let posX = (this.screenWith - ((this.gridBlockRatio * 2 + this.divSize) * 10)) / 2, posY = 0;
+      let cont = collection.length;
+
+      for(let i = 1; i <= cont; i ++) {
+        this.componentsCollection.push({
+            id: collection[i - 1].id,
+            width: this.gridBlockRatio * 2,
+            height: this.gridBlockRatio * 2,
+            zIndex: (collection.length + 1) * 10,
+            miniatura: collection[i - 1].miniatura,
+            category1: collection[i - 1].categoria_contenido[0].tipo,
+            x: posX,
+            y: posY
+        });
+
+        posX += this.gridBlockRatio * 2 + this.divSize;
+        if(i % 10 == 0 && i > 0) {
+            posY += this.gridBlockRatio * 2 + this.divSize + 15;
+            posX = (this.screenWith - ((this.gridBlockRatio * 2 + this.divSize) * 10)) / 2;
+        }
+      }
+    },
     handleWheel(e) {
       e.preventDefault();
 
@@ -127,8 +147,8 @@ export default {
       }
       el.style.backgroundSize = this.gridBlockRatio + "px" + " " + this.gridBlockRatio + "px";
 
-      for (let component of this.components) {
-        let canvasChild = document.getElementById("component" + component.id);
+      for (let component of this.componentsCollection) {
+        let canvasChild = document.getElementById("component_" + component.id);
         canvasChild.style.height = this.gridBlockRatio * 2 + "px";
         canvasChild.style.width = this.gridBlockRatio * 2 + "px";
         this.updatePosition(canvasChild, component);
@@ -166,7 +186,6 @@ export default {
       }
     },
     updateXY(e) {
-        console.log('pasa por aqui')
       /* TODO: Update bounds when scrolling in / out. Module can get lost if taken to edge and then zoomed in */    let currentTarget;
       if(e.target.parentNode.classList.contains("canvas-element")) {
         currentTarget = e.target.parentNode;
@@ -183,8 +202,8 @@ export default {
       let targetId = parseInt(
         currentTarget.id.substring("component".length, e.target.parentNode.id.length)
       );
-      let component = this.components[
-        this.components.map((m) => m.id).indexOf(targetId)
+      let component = this.componentsCollection[
+        this.componentsCollection.map((m) => m.id).indexOf(targetId)
       ];
       
       let xPos = Math.floor(xTarget / this.divSize) * this.divSize;
@@ -207,8 +226,14 @@ export default {
       return parseInt(string.substring(0, string.length - 2));
     },
     showComponentInfo(evt) {
-        console.log(evt.currentTarget.id)
-        this.currentRegistry = { ...this.collectionJson[0] };
+        this.currentRegistry = { ...this.collectionJson[evt.currentTarget.id.split('_')[1]] };
+    },
+    shuffleCollection() {
+      let componentsArray = [ ...this.componentsCollection ];
+      this.componentsCollection = this.componentsCollection.splice();
+      componentsArray = [ ...componentsArray.sort(() => Math.random() - 0.5) ];
+      //this.componentsCollection = [ ...componentsArray ];
+      this.positionComponets(componentsArray);
     }
   }
 };
@@ -222,8 +247,7 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+#app-registry-collection {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -233,17 +257,37 @@ body {
 #grid-container {
   position: relative;
   z-index: 0;
-  background-size: 80px 80px;
+  /*background-size: 300px 300px;
   background-image: linear-gradient(to right, grey 1px, transparent 1px),
-    linear-gradient(to bottom, grey 1px, transparent 1px);
+    linear-gradient(to bottom, grey 1px, transparent 1px);*/
 }
 .canvas-element {
   position: absolute;
   background-color: white;
-  border: 2px solid black;
+  /*border: 1px dashed black;*/
+}
+.canvas-element{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .registry-icon {
   width: 100%;
   height: 100%;
+  filter: sepia(100%) hue-rotate(195deg) saturate(100%);
+  transition: opacity 0.5s;
+}
+.icon-category:before {
+  content: ' ';
+  width: 15px;
+  height: 15px;
+  background: #000;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 9999;
+}
+.category-visible {
+  opacity: 0.5;
 }
 </style>

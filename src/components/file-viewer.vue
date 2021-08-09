@@ -1,5 +1,5 @@
 <template>
-    <div class="file-regitry-viewer">
+    <!-- <div class="file-regitry-viewer">
         <h4>{{ this.registryObject.titulo }}</h4>
         <p><span>Número de registro: </span>{{ this.registryObject.numero }}</p>
         <p><span>Nombre de registro: </span>{{ this.registryObject.nombre }}</p>
@@ -7,7 +7,19 @@
         <p><span>Descripción: </span>{{ this.registryObject.autor }}</p>
         <p><span>Datación: </span>{{ this.registryObject.autor }}</p>
         <p><span>Fecha de registro: </span>{{ this.registryObject.autor }}</p>
-    </div>
+    </div>-->
+    <div>
+    <!-- <b-button v-b-toggle.sidebar-1>Toggle Sidebar</b-button> -->
+    <b-sidebar id="sidebar-1" :title="registryObject.numero" shadow>
+      <div class="px-3 py-2">
+        <b-img src="https://picsum.photos/500/500/?image=54" fluid thumbnail></b-img>
+        <h4>{{ this.registryObject.titulo }}</h4>
+        <p><span class="title-file-viewer">Número de registro: </span><span>{{ this.registryObject.id }}</span></p>
+        <p><span class="title-file-viewer">Nombre de registro: </span><span>{{ this.registryObject.nombre }}</span></p>
+        <p><span class="title-file-viewer">Autor/es: </span><span>{{ this.registryObject.autor }}</span></p>
+      </div>
+    </b-sidebar>
+  </div>
 </template>
 
 <script>
@@ -33,5 +45,8 @@ export default {
         text-align: left;
         padding: 20px;
         border: 1px solid #000;
+    }
+    .title-file-viewer {
+        font-weight: bold;
     }
 </style>
