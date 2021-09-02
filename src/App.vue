@@ -3,7 +3,9 @@
     <!-- <mainMenu></mainMenu> -->
     <div class="container">
       <!-- <router-view></router-view> -->
+      <div>logo</div>
       <registros></registros>
+      <retablos></retablos>
     </div>
   </div>
 </template>
@@ -13,11 +15,13 @@
 //import registryGrid from './components/registry-grid.vue';
 //import mainMenu from './components/menu.vue'
 import registros from './views/registros.vue';
+import retablos from './components/retablos.vue';
 
 export default {
   name: 'App',
   components: {
-    registros
+    registros,
+    retablos
     //mainMenu
   },
   /*data(){
@@ -31,13 +35,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<!-- <style scoped>
   .sub-menu-registry-view li {
     display: inline-block;
     margin-right: 40px;
   }
-    /*.registry-collection-visor {
-        overflow: hidden;
-        width: 100%;
-    }*/
+</style> -->
+<style lang="css">
+  #sidebar-right {
+    background-color: rgb(228,211,56) !important;
+    width: 60%;
+  }
 </style>

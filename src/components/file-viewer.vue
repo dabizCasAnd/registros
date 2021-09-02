@@ -10,15 +10,17 @@
     </div>-->
     <div>
     <!-- <b-button v-b-toggle.sidebar-1>Toggle Sidebar</b-button> -->
-    <b-sidebar id="sidebar-1" :title="registryObject.numero" shadow>
-      <div class="px-3 py-2">
-        <b-img src="https://picsum.photos/500/500/?image=54" fluid thumbnail></b-img>
-        <h4>{{ this.registryObject.titulo }}</h4>
-        <p><span class="title-file-viewer">Número de registro: </span><span>{{ this.registryObject.id }}</span></p>
-        <p><span class="title-file-viewer">Nombre de registro: </span><span>{{ this.registryObject.nombre }}</span></p>
-        <p><span class="title-file-viewer">Autor/es: </span><span>{{ this.registryObject.autor }}</span></p>
-      </div>
-    </b-sidebar>
+    
+      <b-sidebar id="sidebar-1" :title="registryObject.numero" shadow>
+        <div class="px-3 py-2">
+          <p>rg: {{ this.registryObject.id }}</p>
+          <template v-if="typeof registryObject.miniatura !== 'undefined'">
+            <b-img :src="require('@/assets/img/' + this.registryObject.miniatura)" fluid thumbnail></b-img>
+          </template>
+          <h4>{{ this.registryObject.titulo }}</h4>
+          <p><span class="title-file-viewer">Número de registro: </span><span>{{ this.registryObject.id }}</span></p>
+        </div>
+      </b-sidebar>
   </div>
 </template>
 
@@ -48,5 +50,8 @@ export default {
     }
     .title-file-viewer {
         font-weight: bold;
+    }
+    .img-thumbnail {
+      padding: 0px;
     }
 </style>

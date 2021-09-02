@@ -1,6 +1,5 @@
 <template>
 <div>
-  <button @click="shuffleCollection()">shuffle</button>
     <fileViewer :registryObject='currentRegistry'></fileViewer>
     <div id="app-registry-collection" :style="{ minWidth: size + 'px', minHeight: size + 'px' }">
         <div
@@ -24,10 +23,13 @@
             top: component.y + 'px'
             }">
             <div style="color: black;">
-              <template v-if="currentCategory !== null && +component.category1 == currentCategory">
-                <div class="icon-category"></div>
+              <template v-if="currentCategory1 !== null && +component.category1 == currentCategory1">
+                <div class="icon-category">
+                  <img class="registry-icon" :src="require('@/assets/img/icons/iconos-52.svg')" alt="" title="">
+                </div>
                 <img class="registry-icon category-visible" :src="require('@/assets/img/' + component.miniatura)" alt="" title="">
               </template>
+              
               <template v-else>
                 <img class="registry-icon" :src="require('@/assets/img/' + component.miniatura)" alt="" title="">
               </template>
@@ -60,7 +62,7 @@ export default {
         type: Array,
         required: true
       },
-      currentCategory: {
+      currentCategory1: {
         type: Number,
         required: false
       }
@@ -84,16 +86,16 @@ export default {
     this.size = bgSize;
     this.subdivisions = subdivisions;
     let el = document.getElementById("grid-container");
-    let allElements = document.querySelectorAll(".canvas-element");
+    //let allElements = document.querySelectorAll(".canvas-element");
 
     let currentBgSize = this.getPixelsAsInt(
       getComputedStyle(el).backgroundSize
     );
 
-    el.style.backgroundSize = this.gridBlockRatio + "px" + this.gridBlockRatio + "px";
+    //el.style.backgroundSize = this.gridBlockRatio + "px" + this.gridBlockRatio + "px";
     gsap.registerPlugin(Draggable, TweenLite, Back);
     Draggable.create("#grid-container", {
-      bounds: { minX: -2000, minY: -2000, maxX: 0, maxY: 0 }
+      bounds: { minX: -1000, minY: -3000, maxX: 0, maxY: 0 }
     });
 
     this.positionComponets(this.collectionJson);
@@ -105,11 +107,19 @@ export default {
     },
     gridBlockRatio() {
       return this.size / this.subdivisions;
+    },
+    elementsInView() {
+      let elements = this.screenWith / (this.gridBlockRatio * 2 + this.divSize) - 1;
+      if(elements > 10) {
+        elements = 10;
+      }
+      
+      return elements;
     }
   },
   methods: {
     positionComponets(collection) {
-      let posX = (this.screenWith - ((this.gridBlockRatio * 2 + this.divSize) * 10)) / 2, posY = 0;
+      let posX = (this.screenWith - ((this.gridBlockRatio * 2 + this.divSize) * this.elementsInView)) / 2, posY = 0;
       let cont = collection.length;
 
       for(let i = 1; i <= cont; i ++) {
@@ -119,7 +129,7 @@ export default {
             height: this.gridBlockRatio * 2,
             zIndex: (collection.length + 1) * 10,
             miniatura: collection[i - 1].miniatura,
-            category1: collection[i - 1].categoria_contenido[0].tipo,
+            category1: typeof collection[i - 1].categoria_contenido !== 'undefined' ? collection[i - 1].categoria_contenido[0].tipo : collection[i - 1].category1,
             x: posX,
             y: posY
         });
@@ -127,7 +137,7 @@ export default {
         posX += this.gridBlockRatio * 2 + this.divSize;
         if(i % 10 == 0 && i > 0) {
             posY += this.gridBlockRatio * 2 + this.divSize + 15;
-            posX = (this.screenWith - ((this.gridBlockRatio * 2 + this.divSize) * 10)) / 2;
+            posX = (this.screenWith - ((this.gridBlockRatio * 2 + this.divSize) * this.elementsInView)) / 2;
         }
       }
     },
@@ -145,7 +155,7 @@ export default {
       } else if (e.deltaY > 0 && this.subdivisions >= maxZoom) {
         this.subdivisions -= 2;
       }
-      el.style.backgroundSize = this.gridBlockRatio + "px" + " " + this.gridBlockRatio + "px";
+      //el.style.backgroundSize = this.gridBlockRatio + "px" + " " + this.gridBlockRatio + "px";
 
       for (let component of this.componentsCollection) {
         let canvasChild = document.getElementById("component_" + component.id);
@@ -157,33 +167,6 @@ export default {
     handleResizeEvent() {
       this.size = bgSize;
       //this.size = 2500;
-    },
-    updateDraggableList() {
-      let elements = document.querySelectorAll(".canvas-element");
-      for (var i = 0; i < elements.length; i++) {
-        var element = elements[i];
-        if (Draggable.get(element)) continue;
-        let dragEl = Draggable.create(element, {
-          allowEventDefault: false,
-          type: "x,y",
-          bounds: "#grid-container",
-          onPress: function (e) {
-            e.stopPropagation();
-          },
-          liveSnap: true,
-          autoScroll: 3,
-          snap: {
-            x: (endValue) => {
-              return Math.round(endValue / this.divSize) * this.divSize;
-            },
-            y: (endValue) => {
-              return Math.round(endValue / this.divSize) * this.divSize;
-            }
-          },
-          onDragEnd: this.updateXY
-        });
-        this.draggablesArray.push(dragEl);
-      }
     },
     updateXY(e) {
       /* TODO: Update bounds when scrolling in / out. Module can get lost if taken to edge and then zoomed in */    let currentTarget;
@@ -219,8 +202,9 @@ export default {
         y: component.y * this.divSize,
         ease: Back.easeOut.config(1)
       });*/
+      //console.log('this.gridBlockRatio ', this.gridBlockRatio, 'this.subdivisions ', this.subdivisions)
       target.style.top = (Math.round(component.y / 2) * this.gridBlockRatio / 20) + 'px';
-      target.style.left = (Math.round(component.x / 2) * this.gridBlockRatio / 20) + 'px';//this.gridBlockRatio * 2;
+      target.style.left = (Math.round(component.x / 2) * (this.gridBlockRatio / 20)) + 'px'//(Math.round(component.x / 2) * this.gridBlockRatio / 20) + 'px';//this.gridBlockRatio * 2;
     },
     getPixelsAsInt(string) {
       return parseInt(string.substring(0, string.length - 2));
@@ -232,8 +216,32 @@ export default {
       let componentsArray = [ ...this.componentsCollection ];
       this.componentsCollection = this.componentsCollection.splice();
       componentsArray = [ ...componentsArray.sort(() => Math.random() - 0.5) ];
-      //this.componentsCollection = [ ...componentsArray ];
+      this.subdivisions = 60;
       this.positionComponets(componentsArray);
+    },
+    zoomInGrid() {
+      if (this.subdivisions >= maxZoom) {
+        this.subdivisions -= 2;
+      }
+      
+      for (let component of this.componentsCollection) {
+        let canvasChild = document.getElementById("component_" + component.id);
+        canvasChild.style.height = this.gridBlockRatio * 2 + "px";
+        canvasChild.style.width = this.gridBlockRatio * 2 + "px";
+        this.updatePosition(canvasChild, component);
+      }
+    },
+    zoomOutGrid() {
+      if (this.subdivisions <= minZoom) {
+        this.subdivisions += 2;
+      }
+
+      for (let component of this.componentsCollection) {
+        let canvasChild = document.getElementById("component_" + component.id);
+        canvasChild.style.height = this.gridBlockRatio * 2 + "px";
+        canvasChild.style.width = this.gridBlockRatio * 2 + "px";
+        this.updatePosition(canvasChild, component);
+      }
     }
   }
 };
@@ -275,9 +283,9 @@ body {
   width: 100%;
   height: 100%;
   filter: sepia(100%) hue-rotate(195deg) saturate(100%);
-  transition: opacity 0.5s;
+  transition: opacity 0.2s;
 }
-.icon-category:before {
+/*.icon-category:before {
   content: ' ';
   width: 15px;
   height: 15px;
@@ -286,6 +294,13 @@ body {
   top: 0px;
   left: 0px;
   z-index: 9999;
+}*/
+.icon-category {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 9999;
+  opacity: 1;
 }
 .category-visible {
   opacity: 0.5;

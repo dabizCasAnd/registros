@@ -9,9 +9,9 @@
             </div>
             <div>
                 <b-nav>
-                    <b-nav-item>: Ampliar</b-nav-item>
-                    <b-nav-item>: Reducir</b-nav-item>
-                    <b-nav-item>: Reordenar</b-nav-item>
+                    <b-nav-item @click="zoomInGrid()">: Ampliar</b-nav-item>
+                    <b-nav-item @click="zoomOutGrid()">: Reducir</b-nav-item>
+                    <b-nav-item @click="shuffleGrid()">: Reordenar</b-nav-item>
                 </b-nav>
             </div>
         </div>
@@ -19,35 +19,37 @@
             <div class="sub-menu-categorys">
                 <b-nav>
                     <b-nav-item disabled>VIDA COTIDIANA</b-nav-item>
-                    <b-nav-item @click="currentCategoryShow = 0">Memoria</b-nav-item>
-                    <b-nav-item @click="currentCategoryShow = 1">Corporalidades</b-nav-item>
-                    <b-nav-item @click="currentCategoryShow = 2">Tiempo</b-nav-item>
-                    <b-nav-item @click="currentCategoryShow = 3">Identidad</b-nav-item>
-                    <b-nav-item @click="currentCategoryShow = 4">Vinculos</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow1 = 0">Memoria</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow1 = 1">Corporalidades</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow1 = 2">Tiempo</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow1 = 3">Identidad</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow1 = 4">Vinculos</b-nav-item>
                 </b-nav>
             </div>
             <div class="sub-menu-categorys">
                 <b-nav>
                     <b-nav-item disabled>CONTENIDO</b-nav-item>
-                    <b-nav-item active>Active</b-nav-item>
-                    <b-nav-item>Link</b-nav-item>
-                    <b-nav-item>Another Link</b-nav-item>
-                    <b-nav-item>Disabled</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow2 = 0">Ficciones</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow2 = 1">Información</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow2 = 2">Documentos</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow2 = 3">Anécdotas</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow2 = 4">Contexto</b-nav-item>
+                    <b-nav-item @click="currentCategoryShow2 = 5">Referencias</b-nav-item>
                 </b-nav>
             </div>
             <div class="sub-menu-categorys">
                 <b-nav>
                     <b-nav-item disabled>POSICIONAMIENTO</b-nav-item>
-                    <b-nav-item active>Active</b-nav-item>
-                    <b-nav-item>Link</b-nav-item>
-                    <b-nav-item>Another Link</b-nav-item>
-                    <b-nav-item>Disabled</b-nav-item>
+                    <b-nav-item active>Dentro</b-nav-item>
+                    <b-nav-item>Fuera</b-nav-item>
+                    <b-nav-item>En el margen</b-nav-item>
+                    <b-nav-item>No está</b-nav-item>
                 </b-nav>
             </div>
         </b-collapse>
         <div class="registry-collection-visor">
             <!-- <canvas id="registryCanvas"></canvas> -->
-            <registryGrid :collectionJson="myJson" :currentCategory="currentCategoryShow"></registryGrid>
+            <registryGrid ref="registryGrid" :collectionJson="myJson" :currentCategory1="currentCategoryShow1"></registryGrid>
         </div>
     </div>
 </template>
@@ -68,14 +70,25 @@ export default {
     data(){
         return{
             myJson: json,
-            currentCategoryShow: null,
+            currentCategoryShow1: null,
+            currentCategoryShow2: null,
             normalView: true
         }
     },
     methods: {
         showRegistryView() {
-            this.currentCategoryShow = null;
+            this.currentCategoryShow1 = null;
+            this.currentCategoryShow2 = null;
             this.normalView = true;
+        },
+        shuffleGrid() {
+            this.$refs.registryGrid.shuffleCollection();
+        },
+        zoomInGrid() {
+            this.$refs.registryGrid.zoomInGrid();
+        },
+        zoomOutGrid() {
+            this.$refs.registryGrid.zoomOutGrid();
         }
     },
     mounted: function() {
