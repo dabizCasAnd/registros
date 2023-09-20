@@ -31,7 +31,7 @@
               </template>
               
               <template v-else>
-                <img class="registry-icon" :src="require('@/assets/img/' + component.miniatura)" alt="" title="">
+                <img class="registry-icon" :src="require('@/assets/img/' + component.miniatura)" alt="" title="" loading="lazy">
               </template>
             </div>
         </div>

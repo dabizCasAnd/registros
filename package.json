@@ -25,6 +25,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.37.5",
     "sass-loader": "^10",
+    "squoosh-webpack-plugin": "^2.1.1",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
